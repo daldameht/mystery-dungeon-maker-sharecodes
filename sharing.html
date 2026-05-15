@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mystery Dungeon Sharing</title>
+    <link rel="stylesheet" href="sharing.css" />
+  </head>
+  <body>
+    <main class="sharing-shell">
+      <header class="sharing-hero">
+        <div>
+          <p class="eyebrow">Prototype Sharing Site</p>
+          <h1>Mystery Dungeon Hosting</h1>
+          <p class="lede">
+            Publish share-code dungeons or full custom-asset packages, then browse them in a cleaner public-facing list.
+          </p>
+        </div>
+      </header>
+
+      <section class="sharing-layout">
+        <aside class="sharing-panel publish-panel">
+          <div class="panel-heading">
+            <h2>Publish Dungeon</h2>
+            <span>Host a code or package locally</span>
+          </div>
+
+          <section class="publish-section">
+            <h3>Share Code</h3>
+            <label>
+              Paste Share Code
+              <textarea id="shareCodeInput" rows="6" spellcheck="false" placeholder="Paste a dungeon share code here."></textarea>
+            </label>
+            <button id="publishShareCodeButton" type="button" class="primary">Publish Share Code</button>
+          </section>
+
+          <section class="publish-section">
+            <h3>Full Package</h3>
+            <label>
+              Select Full Package
+              <input id="packageInput" type="file" accept=".mdmpkg,.json,application/json" />
+            </label>
+            <button id="publishPackageButton" type="button">Publish Full Package</button>
+          </section>
+
+          <section class="publish-section">
+            <div class="panel-heading">
+              <h3>Hosted Dungeons</h3>
+              <span id="hostedCount">0 hosted</span>
+            </div>
+            <p class="note">
+              Dungeons with custom environment art or custom sounds are hosted as downloadable packages. Standard dungeons use copyable share codes.
+            </p>
+          </section>
+        </aside>
+
+        <section class="sharing-panel listing-panel">
+          <div class="panel-heading">
+            <h2>Dungeon Listings</h2>
+            <span>Public-facing prototype cards</span>
+          </div>
+          <div id="hostingStatus" class="status-line" aria-live="polite"></div>
+          <div id="hostedList" class="hosted-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="sharing.js"></script>
+  </body>
+</html>
