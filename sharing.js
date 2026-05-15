@@ -8,10 +8,7 @@ const publishPackageButton = document.querySelector("#publishPackageButton");
 const hostedCount = document.querySelector("#hostedCount");
 const hostedList = document.querySelector("#hostedList");
 const hostingStatus = document.querySelector("#hostingStatus");
-const ownerUnlockButton = document.querySelector("#ownerUnlockButton");
 const ownerLockButton = document.querySelector("#ownerLockButton");
-const ownerPassphraseInput = document.querySelector("#ownerPassphraseInput");
-const unlockOwnerModeButton = document.querySelector("#unlockOwnerModeButton");
 const publishPanel = document.querySelector("#publishPanel");
 const ownerTools = document.querySelector("#ownerTools");
 const sharingLayout = document.querySelector("#sharingLayout");
@@ -278,6 +275,10 @@ function saveOwnerDrafts(dungeons) {
   localStorage.setItem(OWNER_DRAFT_STORAGE_KEY, JSON.stringify(dungeons.map((entry) => normalizeHostedDungeon(entry))));
 }
 
+function isOwnerMode() {
+  return localStorage.getItem(OWNER_MODE_STORAGE_KEY) === "true";
+}
+
 function loadAllHostedDungeons() {
   const base = getBuiltInHostedDungeons();
   if (!isOwnerMode()) {
@@ -288,21 +289,22 @@ function loadAllHostedDungeons() {
   return merged.filter((entry, index, array) => array.findIndex((other) => other.id === entry.id) === index);
 }
 
-function getOwnerPassphrase() {
-  return String(window.SHARING_SITE_CONFIG?.ownerPassphrase ?? "").trim();
-}
-
-function isOwnerMode() {
-  return localStorage.getItem(OWNER_MODE_STORAGE_KEY) === "true";
-}
-
 function setOwnerMode(enabled) {
   if (enabled) {
     localStorage.setItem(OWNER_MODE_STORAGE_KEY, "true");
   } else {
     localStorage.removeItem(OWNER_MODE_STORAGE_KEY);
   }
-  updateOwnerModeUi();
+}
+
+function applyOwnerModeFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("owner") === "1") {
+    setOwnerMode(true);
+  }
+  if (params.get("owner") === "0") {
+    setOwnerMode(false);
+  }
 }
 
 function updateOwnerModeUi() {
@@ -312,9 +314,6 @@ function updateOwnerModeUi() {
   }
   if (ownerTools) {
     ownerTools.hidden = !owner;
-  }
-  if (ownerUnlockButton) {
-    ownerUnlockButton.hidden = owner;
   }
   if (ownerLockButton) {
     ownerLockButton.hidden = !owner;
@@ -339,7 +338,9 @@ function formatPublishedDate(value) {
 }
 
 function renderHostedDungeons(dungeons = []) {
-  hostedCount.textContent = `${dungeons.length} hosted`;
+  if (hostedCount) {
+    hostedCount.textContent = `${dungeons.length} hosted`;
+  }
   hostedList.innerHTML = "";
   if (dungeons.length === 0) {
     hostedList.innerHTML = `<p class="empty-state">No hosted dungeons yet.</p>`;
@@ -399,7 +400,7 @@ async function publishShareCode() {
     saveOwnerDrafts(drafts);
     shareCodeInput.value = "";
     renderHostedDungeons(loadAllHostedDungeons());
-    setStatus(`Added "${recipe.name}" to your local owner drafts. Export the listing file when you’re ready.`, "");
+    setStatus(`Added "${recipe.name}" to your local owner drafts. Export the listing file when you're ready.`);
   } catch {
     setStatus("That share code could not be added.", "error");
   }
@@ -428,7 +429,7 @@ async function publishFullPackage() {
     saveOwnerDrafts(drafts);
     packageInput.value = "";
     renderHostedDungeons(loadAllHostedDungeons());
-    setStatus(`Added "${recipe.name}" to your local owner drafts. Export the listing file when you’re ready.`);
+    setStatus(`Added "${recipe.name}" to your local owner drafts. Export the listing file when you're ready.`);
   } catch {
     setStatus("That full package could not be added.", "error");
   }
@@ -478,7 +479,7 @@ function removeHostedDungeon(id) {
     setStatus("Removed the drafted listing.");
     return;
   }
-  setStatus("Built-in checked-in listings are removed by exporting new data and updating hosted-dungeons.js in the repo.", "error");
+  setStatus("Checked-in public listings are removed by exporting new data and updating hosted-dungeons.js in the repo.", "error");
 }
 
 function exportHostedListingSource() {
@@ -523,24 +524,6 @@ function clearDrafts() {
   setStatus("Cleared the local owner drafts.");
 }
 
-function unlockOwnerMode() {
-  const configuredPassphrase = getOwnerPassphrase();
-  if (!configuredPassphrase) {
-    setStatus("Set window.SHARING_SITE_CONFIG.ownerPassphrase in index.html before using owner mode.", "error");
-    return;
-  }
-  const entered = ownerPassphraseInput?.value ?? "";
-  if (entered !== configuredPassphrase) {
-    setStatus("That owner passphrase was incorrect.", "error");
-    return;
-  }
-  setOwnerMode(true);
-  if (ownerPassphraseInput) {
-    ownerPassphraseInput.value = "";
-  }
-  setStatus("Owner mode unlocked in this browser.");
-}
-
 publishShareCodeButton?.addEventListener("click", () => {
   void publishShareCode();
 });
@@ -561,25 +544,10 @@ clearDraftsButton?.addEventListener("click", () => {
   clearDrafts();
 });
 
-ownerUnlockButton?.addEventListener("click", () => {
-  if (publishPanel) {
-    publishPanel.hidden = false;
-  }
-  if (ownerTools) {
-    ownerTools.hidden = true;
-  }
-  if (ownerPassphraseInput) {
-    ownerPassphraseInput.focus();
-  }
-});
-
-unlockOwnerModeButton?.addEventListener("click", () => {
-  unlockOwnerMode();
-});
-
 ownerLockButton?.addEventListener("click", () => {
   setOwnerMode(false);
-  setStatus("Owner mode hidden. Public listing only is visible now.");
+  updateOwnerModeUi();
+  setStatus("Owner mode hidden in this browser.");
 });
 
 hostedList?.addEventListener("click", (event) => {
@@ -604,5 +572,5 @@ hostedList?.addEventListener("click", (event) => {
   }
 });
 
-renderHostedDungeons(loadAllHostedDungeons());
+applyOwnerModeFromUrl();
 updateOwnerModeUi();

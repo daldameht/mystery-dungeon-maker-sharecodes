@@ -17,7 +17,6 @@
           </p>
         </div>
         <div class="hero-actions">
-          <button id="ownerUnlockButton" type="button">Owner Mode</button>
           <button id="ownerLockButton" type="button" hidden>Hide Publish Tools</button>
         </div>
       </header>
@@ -30,20 +29,13 @@
           </div>
 
           <section class="publish-section">
-            <h3>Owner Unlock</h3>
-            <label>
-              Owner Passphrase
-              <input id="ownerPassphraseInput" type="password" placeholder="Enter owner passphrase" />
-            </label>
-            <div class="item-actions">
-              <button id="unlockOwnerModeButton" type="button" class="primary">Unlock Publish Tools</button>
-            </div>
+            <h3>Owner Mode</h3>
             <p class="note">
-              This is a static-site owner check stored in your browser. It hides publish tools from normal visitors, but it is not secure server-side authentication.
+              This publish column is only enabled in browsers where owner mode has been turned on locally. Static GitHub Pages cannot securely hide site features without a backend, so this is convenience-only.
             </p>
           </section>
 
-          <div id="ownerTools" hidden>
+          <div id="ownerTools">
             <section class="publish-section">
               <h3>Share Code</h3>
               <label>
@@ -91,9 +83,6 @@
     </main>
 
     <script>
-      window.SHARING_SITE_CONFIG = window.SHARING_SITE_CONFIG || {
-        ownerPassphrase: "Qazwsxedc!3",
-      };
       window.HOSTED_DUNGEONS = window.HOSTED_DUNGEONS || [];
     </script>
     <script src="hosted-dungeons.js"></script>
