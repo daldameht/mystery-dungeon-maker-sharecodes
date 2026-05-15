@@ -22,8 +22,31 @@
         <aside class="sharing-panel publish-panel">
           <div class="panel-heading">
             <h2>Publish Dungeon</h2>
-            <span>Host a code or package locally</span>
+            <span>Supabase-backed hosting</span>
           </div>
+
+          <section class="publish-section">
+            <h3>Supabase Connection</h3>
+            <label>
+              Supabase URL
+              <input id="supabaseUrlInput" type="url" placeholder="https://your-project.supabase.co" />
+            </label>
+            <label>
+              Supabase Anon Key
+              <textarea id="supabaseAnonKeyInput" rows="4" spellcheck="false" placeholder="Paste your Supabase anon key."></textarea>
+            </label>
+            <label>
+              Admin Delete Passphrase
+              <input id="adminPassphraseInput" type="password" placeholder="Prototype-only admin passphrase" />
+            </label>
+            <div class="item-actions">
+              <button id="saveSupabaseConfigButton" type="button" class="primary">Save Connection</button>
+              <button id="clearSupabaseConfigButton" type="button">Clear Saved Connection</button>
+            </div>
+            <p class="note">
+              Save these once in your browser, or hardcode them in <code>window.SHARING_SITE_CONFIG</code> before deploy.
+            </p>
+          </section>
 
           <section class="publish-section">
             <h3>Share Code</h3>
@@ -65,6 +88,14 @@
       </section>
     </main>
 
+    <script>
+      window.SHARING_SITE_CONFIG = window.SHARING_SITE_CONFIG || {
+        supabaseUrl: "",
+        supabaseAnonKey: "",
+        adminDeletePassphrase: "",
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="sharing.js"></script>
   </body>
 </html>
