@@ -94,6 +94,10 @@ p {
 }
 
 .sharing-hero {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -125,6 +129,17 @@ h1 {
   grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
   gap: 1rem;
   align-items: start;
+}
+
+.sharing-layout.sharing-layout-public {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: start;
+  flex-wrap: wrap;
 }
 
 .sharing-panel {
@@ -241,5 +256,9 @@ h1 {
 
   .publish-panel {
     position: static;
+  }
+
+  .sharing-hero {
+    flex-direction: column;
   }
 }

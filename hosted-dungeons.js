@@ -1,0 +1,1 @@
+window.HOSTED_DUNGEONS = window.HOSTED_DUNGEONS || [];
